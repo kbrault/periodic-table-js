@@ -42,8 +42,12 @@
             --actinide: #d946ef;
         }
 
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: 'Segoe UI', system-ui, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
@@ -53,16 +57,11 @@
             align-items: center;
         }
 
-        header {
-            text-align: center;
-            width: 100%;
-        }
-
         .controls {
             display: flex;
             justify-content: center;
             gap: 15px;
-            margin-top: 20px;
+            margin: 20px 0;
             flex-wrap: wrap;
         }
 
@@ -87,16 +86,21 @@
             overflow-x: auto;
             padding: 20px 0;
             display: flex;
-            justify-content: flex-start;
         }
 
         .periodic-table {
             display: grid;
-            grid-template-columns: repeat(18, 65px);
-            grid-template-rows: repeat(10, 65px);
+            grid-template-columns: repeat(18, 68px);
+            grid-template-rows: repeat(10, 60px);
             gap: 6px;
-            margin: 0 auto;
-            min-width: 1280px;
+            margin: auto;
+            width: fit-content;
+        }
+
+        .periodic-table:has(.element-card:hover) .element-card:not(:hover),
+        body:has(.modal-overlay[style*="display: flex"]) .element-card {
+            opacity: 0.3;
+            filter: grayscale(0.8) blur(2px);
         }
 
         .element-card {
@@ -108,21 +112,41 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             border-bottom: 4px solid transparent;
+            z-index: 1;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.4s ease,
+                background-color 0.3s ease,
+                opacity 0.4s ease;
+            will-change: transform;
         }
 
         .element-card:hover {
-            transform: translateY(-5px) scale(1.05);
-            z-index: 20;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+            opacity: 1 !important;
+            filter: none !important;
+            transform: scale(1.6);
+            z-index: 100;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.9);
+            background-color: #2d3748;
+        }
+
+        .element-card:hover .num {
+            transform: scale(0.7);
+            top: 4px;
+            left: 4px;
+        }
+
+        .element-card:hover .sym {
+            transform: scale(1.2);
+        }
+
+        .element-card:hover .name {
+            transform: scale(0.8);
         }
 
         .element-card.dimmed {
-            opacity: 0.2;
-            filter: grayscale(0.8);
-            transform: scale(0.95);
+            opacity: 0.1 !important;
             pointer-events: none;
         }
 
@@ -132,11 +156,13 @@
             top: 5px;
             left: 8px;
             opacity: 0.6;
+            transition: 0.3s;
         }
 
         .element-card .sym {
             font-size: 1.4rem;
             font-weight: bold;
+            transition: 0.3s;
         }
 
         .element-card .name {
@@ -145,6 +171,7 @@
             margin-top: 2px;
             white-space: nowrap;
             overflow: hidden;
+            transition: 0.3s;
         }
 
         .alkali-metal {
@@ -187,7 +214,6 @@
             position: fixed;
             inset: 0;
             background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(15px);
             display: none;
             justify-content: center;
             align-items: center;
@@ -261,7 +287,7 @@
             grid-template-columns: 1fr 1fr;
             gap: 15px;
             border-top: 1px solid #334155;
-            pt: 20px;
+            padding-top: 20px;
             margin-top: 20px;
         }
 
@@ -442,10 +468,10 @@
                 card.style.gridRow = el.y;
 
                 card.innerHTML = `
-            <span class="num">${el.n}</span>
-            <span class="sym">${el.s}</span>
-            <span class="name">${el.name}</span>
-        `;
+                    <span class="num">${el.n}</span>
+                    <span class="sym">${el.s}</span>
+                    <span class="name">${el.name}</span>
+                `;
 
                 card.addEventListener('click', () => showDetails(el));
                 table.appendChild(card);
@@ -463,26 +489,38 @@
                     card.dataset.num.includes(query);
                 const matchesCat = (cat === 'all' || card.dataset.cat === cat);
 
-                if (matchesSearch && matchesCat) {
-                    card.classList.remove('dimmed');
-                } else {
-                    card.classList.add('dimmed');
-                }
+                card.classList.toggle('dimmed', !(matchesSearch && matchesCat));
             });
         }
 
         function showDetails(el) {
-            const boilVal = el.boil === "N/A" ? "Unknown / Unstable" : `${el.boil} K`;
+            const boilVal = el.boil === "N/A" ? "Unknown" : `${el.boil} K`;
             const meltVal = el.melt === "N/A" ? "Unknown" : `${el.melt} K`;
 
+            const categoryMap = {
+                'diatomic-nonmetal': 'var(--nonmetal)',
+                'noble-gas': 'var(--noble)',
+                'alkali-metal': 'var(--alkali)',
+                'alkaline-earth-metal': 'var(--alkaline)',
+                'metalloid': 'var(--metalloid)',
+                'post-transition-metal': 'var(--post-transition)',
+                'transition-metal': 'var(--transition)',
+                'lanthanide': 'var(--lanthanide)',
+                'actinide': 'var(--actinide)'
+            };
+
+            const groupColor = categoryMap[el.cat] || 'var(--accent)';
+            const modalContent = document.querySelector('.modal-content');
+            modalContent.style.setProperty('--accent', groupColor);
+
             modalBody.innerHTML = `
-        <span class="cat-label">${el.cat.replace(/-/g, ' ')}</span>
-        <h2>${el.name} (${el.s})</h2>
+        <span class="cat-label" style="color: var(--accent)">${el.cat.replace(/-/g, ' ')}</span>
+        <h2 style="color: var(--accent)">${el.name} (${el.s})</h2>
         <div class="info-grid">
             <div class="info-item"><b>Atomic Number</b>${el.n}</div>
             <div class="info-item"><b>Atomic Mass</b>${el.m} u</div>
             <div class="info-item"><b>Configuration</b>${el.config}</div>
-            <div class="info-item"><b>discoveryovery</b>${el.discovery}</div>
+            <div class="info-item"><b>Discovery</b>${el.discovery}</div>
             <div class="info-item"><b>Melting Point</b>${meltVal}</div>
             <div class="info-item"><b>Boiling Point</b>${boilVal}</div>
         </div>
@@ -493,10 +531,7 @@
         document.getElementById('search').addEventListener('input', filterElements);
         document.getElementById('filter-category').addEventListener('change', filterElements);
         document.getElementById('close-modal').addEventListener('click', () => modal.style.display = 'none');
-
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) modal.style.display = 'none';
-        });
+        modal.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
 
         init();
     </script>
