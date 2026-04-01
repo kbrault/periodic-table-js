@@ -29,14 +29,10 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Minify index.html (including inline CSS/JS)
+      - name: Minify index.html and elements.json
         run: |
-          npx html-minifier \
-            --collapse-whitespace \
-            --remove-comments \
-            --minify-js true \
-            --minify-css true \
-            -o index.html index.html
+          npx html-minifier --collapse-whitespace --remove-comments --minify-js true --minify-css true -o index.html index.html
+          node -e "const fs = require('fs'); const data = JSON.parse(fs.readFileSync('elements.json')); fs.writeFileSync('elements.json', JSON.stringify(data));"
 
       - name: Setup Pages
         uses: actions/configure-pages@v5

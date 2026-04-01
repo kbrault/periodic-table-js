@@ -30,7 +30,7 @@
             --bg-color: #0b0f1a;
             --card-bg: #1e293b;
             --text-color: #f8fafc;
-            --accent: #38bdf8;
+            --accent: #a0a6ad;
             --alkali: #ef4444;
             --alkaline: #f97316;
             --transition: #eab308;
@@ -40,10 +40,6 @@
             --noble: #ec4899;
             --lanthanide: #6366f1;
             --actinide: #d946ef;
-        }
-
-        * {
-            box-sizing: border-box;
         }
 
         body {
@@ -60,25 +56,62 @@
         .controls {
             display: flex;
             justify-content: center;
+            align-items: stretch;
             gap: 15px;
             margin: 20px 0;
             flex-wrap: wrap;
         }
 
-        input,
-        select {
-            padding: 12px 20px;
+        .control-box,
+        input[type="text"],
+        select,
+        .reset-btn {
+            background: var(--card-bg);
+            padding: 0 15px;
             border-radius: 12px;
             border: 1px solid #334155;
-            background: var(--card-bg);
             color: white;
-            font-size: 1rem;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
             outline: none;
-            transition: border-color 0.3s;
         }
 
-        input:focus {
-            border-color: var(--accent);
+        .reset-btn {
+            cursor: pointer;
+            background: #334155;
+            transition: all 0.2s;
+            font-weight: bold;
+            border: 1px solid #475569;
+        }
+
+        .reset-btn:hover {
+            background: #ef4444;
+            border-color: #ef4444;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
         }
 
         .table-wrapper {
@@ -97,12 +130,6 @@
             width: fit-content;
         }
 
-        .periodic-table:has(.element-card:hover) .element-card:not(:hover),
-        body:has(.modal-overlay[style*="display: flex"]) .element-card {
-            opacity: 0.3;
-            filter: grayscale(0.8) blur(2px);
-        }
-
         .element-card {
             background-color: var(--card-bg);
             padding: 8px;
@@ -114,40 +141,14 @@
             cursor: pointer;
             position: relative;
             border-bottom: 4px solid transparent;
-            z-index: 1;
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-                box-shadow 0.4s ease,
-                background-color 0.3s ease,
-                opacity 0.4s ease;
-            will-change: transform;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease, opacity 0.4s ease;
         }
 
         .element-card:hover {
-            opacity: 1 !important;
-            filter: none !important;
             transform: scale(1.6);
             z-index: 100;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.9);
             background-color: #2d3748;
-        }
-
-        .element-card:hover .num {
-            transform: scale(0.7);
-            top: 4px;
-            left: 4px;
-        }
-
-        .element-card:hover .sym {
-            transform: scale(1.2);
-        }
-
-        .element-card:hover .name {
-            transform: scale(0.8);
-        }
-
-        .element-card.dimmed {
-            opacity: 0.1 !important;
-            pointer-events: none;
         }
 
         .element-card .num {
@@ -156,22 +157,26 @@
             top: 5px;
             left: 8px;
             opacity: 0.6;
-            transition: 0.3s;
         }
 
         .element-card .sym {
             font-size: 1.4rem;
             font-weight: bold;
-            transition: 0.3s;
         }
 
-        .element-card .name {
-            font-size: 0.6rem;
-            text-align: center;
-            margin-top: 2px;
-            white-space: nowrap;
-            overflow: hidden;
-            transition: 0.3s;
+        .dimmed {
+            opacity: 0.1 !important;
+            filter: grayscale(0.8) blur(2px) !important;
+            pointer-events: none;
+        }
+
+        .state-liquid {
+            box-shadow: inset 0 0 8px var(--accent);
+        }
+
+        .state-gas {
+            border-style: dashed !important;
+            opacity: 0.5;
         }
 
         .alkali-metal {
@@ -210,10 +215,15 @@
             border-color: var(--actinide);
         }
 
+        #search {
+            width: 140px;
+            flex: none;
+        }
+
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.8);
             display: none;
             justify-content: center;
             align-items: center;
@@ -228,7 +238,7 @@
             max-width: 500px;
             position: relative;
             border: 1px solid #334155;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
         }
 
         #close-modal {
@@ -251,7 +261,6 @@
             width: 30px;
             height: 2px;
             background-color: white;
-            transition: background 0.2s;
         }
 
         #close-modal::before {
@@ -260,26 +269,6 @@
 
         #close-modal::after {
             transform: rotate(-45deg);
-        }
-
-        #close-modal:hover::before,
-        #close-modal:hover::after {
-            background-color: var(--alkali);
-        }
-
-        .modal-body h2 {
-            font-size: 2.5rem;
-            margin: 0;
-            color: var(--accent);
-        }
-
-        .modal-body .cat-label {
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-size: 0.8rem;
-            margin-bottom: 20px;
-            display: block;
-            opacity: 0.8;
         }
 
         .info-grid {
@@ -296,6 +285,54 @@
             color: var(--accent);
             font-size: 0.8rem;
         }
+
+        .wiki-btn {
+            display: block;
+            margin-top: 25px;
+            padding: 12px;
+            text-align: center;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 8px;
+            color: white;
+            transition: opacity 0.2s;
+        }
+
+        .wiki-btn:hover {
+            opacity: 0.8;
+        }
+
+        .github-corner:hover .octo-arm {
+            animation: octocat-wave 560ms ease-in-out;
+        }
+
+        @keyframes octocat-wave {
+
+            0%,
+            100% {
+                transform: rotate(0);
+            }
+
+            20%,
+            60% {
+                transform: rotate(-25deg);
+            }
+
+            40%,
+            80% {
+                transform: rotate(10deg);
+            }
+        }
+
+        @media (max-width: 500px) {
+            .github-corner:hover .octo-arm {
+                animation: none;
+            }
+
+            .github-corner .octo-arm {
+                animation: octocat-wave 560ms ease-in-out;
+            }
+        }
     </style>
 </head>
 
@@ -303,19 +340,59 @@
 
     <header>
         <div class="controls">
-            <input type="text" id="search" placeholder="Search (H, Gold, 79...)">
-            <select id="filter-category">
+            <button class="reset-btn" onclick="resetAllFilters()">Reset All</button>
+
+            <input type="text" id="search" placeholder="Search..." oninput="filterElements()">
+
+            <select id="filter-category" onchange="filterElements()">
                 <option value="all">All Groups</option>
-                <option value="alkali-metal">Alkali Metals</option>
-                <option value="alkaline-earth-metal">Alkaline Earth Metals</option>
-                <option value="transition-metal">Transition Metals</option>
-                <option value="lanthanide">Lanthanides</option>
-                <option value="actinide">Actinides</option>
-                <option value="post-transition-metal">Post-transition Metals</option>
-                <option value="metalloid">Metalloids</option>
-                <option value="diatomic-nonmetal">Non-metals</option>
-                <option value="noble-gas">Noble Gases</option>
+                <option value="alkali-metal">Alkali</option>
+                <option value="alkaline-earth-metal">Alkaline</option>
+                <option value="transition-metal">Transition</option>
+                <option value="post-transition-metal">Post-Transition</option>
+                <option value="lanthanide">Lanthanide</option>
+                <option value="actinide">Actinide</option>
+                <option value="metalloid">Metalloid</option>
+                <option value="diatomic-nonmetal">Nonmetal</option>
+                <option value="noble-gas">Noble Gas</option>
             </select>
+
+            <div class="control-box">
+                <label>Temp: <b id="temp-val">298</b>K</label>
+                <input type="range" id="temp-slider" min="0" max="6000" value="298"
+                    oninput="updateStates(this.value); filterElements();">
+            </div>
+
+            <div class="control-box">
+                <label>Melt: <b id="melt-val">0</b>K+</label>
+                <input type="range" id="melt-slider" min="0" max="4000" value="0" oninput="filterElements()">
+            </div>
+
+            <div class="control-box">
+                <label>Valence: <b id="valence-val">All</b></label>
+                <input type="range" id="valence-slider" min="0" max="8" value="0" oninput="filterElements()">
+            </div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-dot" style="background:var(--alkali)"></div>Alkali
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background:var(--alkaline)"></div>Alkaline
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background:var(--transition)"></div>Transition
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background:var(--metalloid)"></div>Metalloid
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background:var(--nonmetal)"></div>Nonmetal
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot" style="background:var(--noble)"></div>Noble
+            </div>
         </div>
     </header>
 
@@ -323,218 +400,134 @@
         <div id="periodic-table" class="periodic-table"></div>
     </div>
 
-    <div id="modal-overlay" class="modal-overlay">
-        <div class="modal-content">
-            <button id="close-modal"></button>
-            <div id="modal-body" class="modal-body"></div>
+    <div id="modal-overlay" class="modal-overlay" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button id="close-modal" onclick="closeModal()"></button>
+            <div id="modal-body"></div>
         </div>
     </div>
 
     <script>
-        const elements = [
-            { n: 1, s: "H", name: "Hydrogen", m: 1.008, cat: "diatomic-nonmetal", x: 1, y: 1, config: "1s1", discovery: "1766", melt: 13.99, boil: 20.27 },
-            { n: 2, s: "He", name: "Helium", m: 4.002, cat: "noble-gas", x: 18, y: 1, config: "1s2", discovery: "1868", melt: "N/A", boil: 4.22 },
-            { n: 3, s: "Li", name: "Lithium", m: 6.94, cat: "alkali-metal", x: 1, y: 2, config: "[He] 2s1", discovery: "1817", melt: 453.65, boil: 1603 },
-            { n: 4, s: "Be", name: "Beryllium", m: 9.012, cat: "alkaline-earth-metal", x: 2, y: 2, config: "[He] 2s2", discovery: "1798", melt: 1560, boil: 2742 },
-            { n: 5, s: "B", name: "Boron", m: 10.81, cat: "metalloid", x: 13, y: 2, config: "[He] 2s2 2p1", discovery: "1808", melt: 2349, boil: 4200 },
-            { n: 6, s: "C", name: "Carbon", m: 12.011, cat: "diatomic-nonmetal", x: 14, y: 2, config: "[He] 2s2 2p2", discovery: "Ancient", melt: 3823, boil: 4098 },
-            { n: 7, s: "N", name: "Nitrogen", m: 14.007, cat: "diatomic-nonmetal", x: 15, y: 2, config: "[He] 2s2 2p3", discovery: "1772", melt: 63.15, boil: 77.36 },
-            { n: 8, s: "O", name: "Oxygen", m: 15.999, cat: "diatomic-nonmetal", x: 16, y: 2, config: "[He] 2s2 2p4", discovery: "1774", melt: 54.36, boil: 90.20 },
-            { n: 9, s: "F", name: "Fluorine", m: 18.998, cat: "diatomic-nonmetal", x: 17, y: 2, config: "[He] 2s2 2p5", discovery: "1886", melt: 53.53, boil: 85.03 },
-            { n: 10, s: "Ne", name: "Neon", m: 20.180, cat: "noble-gas", x: 18, y: 2, config: "[He] 2s2 2p6", discovery: "1898", melt: 24.56, boil: 27.07 },
-            { n: 11, s: "Na", name: "Sodium", m: 22.990, cat: "alkali-metal", x: 1, y: 3, config: "[Ne] 3s1", discovery: "1807", melt: 370.87, boil: 1156 },
-            { n: 12, s: "Mg", name: "Magnesium", m: 24.305, cat: "alkaline-earth-metal", x: 2, y: 3, config: "[Ne] 3s2", discovery: "1755", melt: 923, boil: 1363 },
-            { n: 13, s: "Al", name: "Aluminium", m: 26.982, cat: "post-transition-metal", x: 13, y: 3, config: "[Ne] 3s2 3p1", discovery: "1825", melt: 933.47, boil: 2792 },
-            { n: 14, s: "Si", name: "Silicon", m: 28.085, cat: "metalloid", x: 14, y: 3, config: "[Ne] 3s2 3p2", discovery: "1824", melt: 1687, boil: 3538 },
-            { n: 15, s: "P", name: "Phosphorus", m: 30.974, cat: "diatomic-nonmetal", x: 15, y: 3, config: "[Ne] 3s2 3p3", discovery: "1669", melt: 317.30, boil: 553.15 },
-            { n: 16, s: "S", name: "Sulfur", m: 32.06, cat: "diatomic-nonmetal", x: 16, y: 3, config: "[Ne] 3s2 3p4", discovery: "Ancient", melt: 388.36, boil: 717.87 },
-            { n: 17, s: "Cl", name: "Chlorine", m: 35.45, cat: "diatomic-nonmetal", x: 17, y: 3, config: "[Ne] 3s2 3p5", discovery: "1774", melt: 171.6, boil: 239.11 },
-            { n: 18, s: "Ar", name: "Argon", m: 39.948, cat: "noble-gas", x: 18, y: 3, config: "[Ne] 3s2 3p6", discovery: "1894", melt: 83.80, boil: 87.30 },
-            { n: 19, s: "K", name: "Potassium", m: 39.098, cat: "alkali-metal", x: 1, y: 4, config: "[Ar] 4s1", discovery: "1807", melt: 336.53, boil: 1032 },
-            { n: 20, s: "Ca", name: "Calcium", m: 40.078, cat: "alkaline-earth-metal", x: 2, y: 4, config: "[Ar] 4s2", discovery: "1808", melt: 1115, boil: 1757 },
-            { n: 21, s: "Sc", name: "Scandium", m: 44.956, cat: "transition-metal", x: 3, y: 4, config: "[Ar] 3d1 4s2", discovery: "1879", melt: 1814, boil: 3109 },
-            { n: 22, s: "Ti", name: "Titanium", m: 47.867, cat: "transition-metal", x: 4, y: 4, config: "[Ar] 3d2 4s2", discovery: "1791", melt: 1941, boil: 3560 },
-            { n: 23, s: "V", name: "Vanadium", m: 50.942, cat: "transition-metal", x: 5, y: 4, config: "[Ar] 3d3 4s2", discovery: "1801", melt: 2183, boil: 3680 },
-            { n: 24, s: "Cr", name: "Chromium", m: 51.996, cat: "transition-metal", x: 6, y: 4, config: "[Ar] 3d5 4s1", discovery: "1797", melt: 2180, boil: 2944 },
-            { n: 25, s: "Mn", name: "Manganese", m: 54.938, cat: "transition-metal", x: 7, y: 4, config: "[Ar] 3d5 4s2", discovery: "1774", melt: 1519, boil: 2334 },
-            { n: 26, s: "Fe", name: "Iron", m: 55.845, cat: "transition-metal", x: 8, y: 4, config: "[Ar] 3d6 4s2", discovery: "Ancient", melt: 1811, boil: 3134 },
-            { n: 27, s: "Co", name: "Cobalt", m: 58.933, cat: "transition-metal", x: 9, y: 4, config: "[Ar] 3d7 4s2", discovery: "1735", melt: 1768, boil: 3200 },
-            { n: 28, s: "Ni", name: "Nickel", m: 58.693, cat: "transition-metal", x: 10, y: 4, config: "[Ar] 3d8 4s2", discovery: "1751", melt: 1728, boil: 3186 },
-            { n: 29, s: "Cu", name: "Copper", m: 63.546, cat: "transition-metal", x: 11, y: 4, config: "[Ar] 3d10 4s1", discovery: "Ancient", melt: 1357.77, boil: 2835 },
-            { n: 30, s: "Zn", name: "Zinc", m: 65.38, cat: "transition-metal", x: 12, y: 4, config: "[Ar] 3d10 4s2", discovery: "1746", melt: 692.68, boil: 1180 },
-            { n: 31, s: "Ga", name: "Gallium", m: 69.723, cat: "post-transition-metal", x: 13, y: 4, config: "[Ar] 3d10 4s2 4p1", discovery: "1875", melt: 302.91, boil: 2477 },
-            { n: 32, s: "Ge", name: "Germanium", m: 72.630, cat: "metalloid", x: 14, y: 4, config: "[Ar] 3d10 4s2 4p2", discovery: "1886", melt: 1211.40, boil: 3106 },
-            { n: 33, s: "As", name: "Arsenic", m: 74.922, cat: "metalloid", x: 15, y: 4, config: "[Ar] 3d10 4s2 4p3", discovery: "Ancient", melt: 1090, boil: 887 },
-            { n: 34, s: "Se", name: "Selenium", m: 78.971, cat: "diatomic-nonmetal", x: 16, y: 4, config: "[Ar] 3d10 4s2 4p4", discovery: "1817", melt: 494, boil: 958 },
-            { n: 35, s: "Br", name: "Bromine", m: 79.904, cat: "diatomic-nonmetal", x: 17, y: 4, config: "[Ar] 3d10 4s2 4p5", discovery: "1826", melt: 265.8, boil: 332 },
-            { n: 36, s: "Kr", name: "Krypton", m: 83.798, cat: "noble-gas", x: 18, y: 4, config: "[Ar] 3d10 4s2 4p6", discovery: "1898", melt: 115.79, boil: 119.93 },
-            { n: 37, s: "Rb", name: "Rubidium", m: 85.468, cat: "alkali-metal", x: 1, y: 5, config: "[Kr] 5s1", discovery: "1861", melt: 312.46, boil: 961 },
-            { n: 38, s: "Sr", name: "Strontium", m: 87.62, cat: "alkaline-earth-metal", x: 2, y: 5, config: "[Kr] 5s2", discovery: "1790", melt: 1050, boil: 1655 },
-            { n: 39, s: "Y", name: "Yttrium", m: 88.906, cat: "transition-metal", x: 3, y: 5, config: "[Kr] 4d1 5s2", discovery: "1794", melt: 1799, boil: 3609 },
-            { n: 40, s: "Zr", name: "Zirconium", m: 91.224, cat: "transition-metal", x: 4, y: 5, config: "[Kr] 4d2 5s2", discovery: "1789", melt: 2128, boil: 4682 },
-            { n: 41, s: "Nb", name: "Niobium", m: 92.906, cat: "transition-metal", x: 5, y: 5, config: "[Kr] 4d4 5s1", discovery: "1801", melt: 2750, boil: 5017 },
-            { n: 42, s: "Mo", name: "Molybdenum", m: 95.95, cat: "transition-metal", x: 6, y: 5, config: "[Kr] 4d5 5s1", discovery: "1778", melt: 2896, boil: 4912 },
-            { n: 43, s: "Tc", name: "Technetium", m: 98, cat: "transition-metal", x: 7, y: 5, config: "[Kr] 4d5 5s2", discovery: "1937", melt: 2430, boil: 4538 },
-            { n: 44, s: "Ru", name: "Ruthenium", m: 101.07, cat: "transition-metal", x: 8, y: 5, config: "[Kr] 4d7 5s1", discovery: "1844", melt: 2607, boil: 4423 },
-            { n: 45, s: "Rh", name: "Rhodium", m: 102.91, cat: "transition-metal", x: 9, y: 5, config: "[Kr] 4d8 5s1", discovery: "1803", melt: 2237, boil: 3968 },
-            { n: 46, s: "Pd", name: "Palladium", m: 106.42, cat: "transition-metal", x: 10, y: 5, config: "[Kr] 4d10", discovery: "1803", melt: 1828.05, boil: 3236 },
-            { n: 47, s: "Ag", name: "Silver", m: 107.87, cat: "transition-metal", x: 11, y: 5, config: "[Kr] 4d10 5s1", discovery: "Ancient", melt: 1234.93, boil: 2435 },
-            { n: 48, s: "Cd", name: "Cadmium", m: 112.41, cat: "transition-metal", x: 12, y: 5, config: "[Kr] 4d10 5s2", discovery: "1817", melt: 594.22, boil: 1040 },
-            { n: 49, s: "In", name: "Indium", m: 114.82, cat: "post-transition-metal", x: 13, y: 5, config: "[Kr] 4d10 5s2 5p1", discovery: "1863", melt: 429.75, boil: 2345 },
-            { n: 50, s: "Sn", name: "Tin", m: 118.71, cat: "post-transition-metal", x: 14, y: 5, config: "[Kr] 4d10 5s2 5p2", discovery: "Ancient", melt: 505.08, boil: 2875 },
-            { n: 51, s: "Sb", name: "Antimony", m: 121.76, cat: "metalloid", x: 15, y: 5, config: "[Kr] 4d10 5s2 5p3", discovery: "Ancient", melt: 903.78, boil: 1860 },
-            { n: 52, s: "Te", name: "Tellurium", m: 127.60, cat: "metalloid", x: 16, y: 5, config: "[Kr] 4d10 5s2 5p4", discovery: "1782", melt: 722.66, boil: 1261 },
-            { n: 53, s: "I", name: "Iodine", m: 126.90, cat: "diatomic-nonmetal", x: 17, y: 5, config: "[Kr] 4d10 5s2 5p5", discovery: "1811", melt: 386.85, boil: 457.4 },
-            { n: 54, s: "Xe", name: "Xenon", m: 131.29, cat: "noble-gas", x: 18, y: 5, config: "[Kr] 4d10 5s2 5p6", discovery: "1898", melt: 161.4, boil: 165.03 },
-            { n: 55, s: "Cs", name: "Caesium", m: 132.91, cat: "alkali-metal", x: 1, y: 6, config: "[Xe] 6s1", discovery: "1860", melt: 301.59, boil: 944 },
-            { n: 56, s: "Ba", name: "Barium", m: 137.33, cat: "alkaline-earth-metal", x: 2, y: 6, config: "[Xe] 6s2", discovery: "1808", melt: 1000, boil: 2170 },
-            { n: 57, s: "La", name: "Lanthanum", m: 138.91, cat: "lanthanide", x: 4, y: 9, config: "[Xe] 5d1 6s2", discovery: "1839", melt: 1193, boil: 3737 },
-            { n: 58, s: "Ce", name: "Cerium", m: 140.12, cat: "lanthanide", x: 5, y: 9, config: "[Xe] 4f1 5d1 6s2", discovery: "1803", melt: 1068, boil: 3716 },
-            { n: 59, s: "Pr", name: "Praseodymium", m: 140.91, cat: "lanthanide", x: 6, y: 9, config: "[Xe] 4f3 6s2", discovery: "1885", melt: 1208, boil: 3793 },
-            { n: 60, s: "Nd", name: "Neodymium", m: 144.24, cat: "lanthanide", x: 7, y: 9, config: "[Xe] 4f4 6s2", discovery: "1885", melt: 1297, boil: 3347 },
-            { n: 61, s: "Pm", name: "Promethium", m: 145, cat: "lanthanide", x: 8, y: 9, config: "[Xe] 4f5 6s2", discovery: "1945", melt: 1315, boil: 3273 },
-            { n: 62, s: "Sm", name: "Samarium", m: 150.36, cat: "lanthanide", x: 9, y: 9, config: "[Xe] 4f6 6s2", discovery: "1879", melt: 1345, boil: 2067 },
-            { n: 63, s: "Eu", name: "Europium", m: 151.96, cat: "lanthanide", x: 10, y: 9, config: "[Xe] 4f7 6s2", discovery: "1901", melt: 1099, boil: 1802 },
-            { n: 64, s: "Gd", name: "Gadolinium", m: 157.25, cat: "lanthanide", x: 11, y: 9, config: "[Xe] 4f7 5d1 6s2", discovery: "1880", melt: 1585, boil: 3546 },
-            { n: 65, s: "Tb", name: "Terbium", m: 158.93, cat: "lanthanide", x: 12, y: 9, config: "[Xe] 4f9 6s2", discovery: "1843", melt: 1629, boil: 3503 },
-            { n: 66, s: "Dy", name: "Dysprosium", m: 162.50, cat: "lanthanide", x: 13, y: 9, config: "[Xe] 4f10 6s2", discovery: "1886", melt: 1680, boil: 2840 },
-            { n: 67, s: "Ho", name: "Holmium", m: 164.93, cat: "lanthanide", x: 14, y: 9, config: "[Xe] 4f11 6s2", discovery: "1878", melt: 1734, boil: 2993 },
-            { n: 68, s: "Er", name: "Erbium", m: 167.26, cat: "lanthanide", x: 15, y: 9, config: "[Xe] 4f12 6s2", discovery: "1843", melt: 1802, boil: 3141 },
-            { n: 69, s: "Tm", name: "Thulium", m: 168.93, cat: "lanthanide", x: 16, y: 9, config: "[Xe] 4f13 6s2", discovery: "1879", melt: 1818, boil: 2223 },
-            { n: 70, s: "Yb", name: "Ytterbium", m: 173.05, cat: "lanthanide", x: 17, y: 9, config: "[Xe] 4f14 6s2", discovery: "1878", melt: 1097, boil: 1469 },
-            { n: 71, s: "Lu", name: "Lutetium", m: 174.97, cat: "lanthanide", x: 18, y: 9, config: "[Xe] 4f14 5d1 6s2", discovery: "1907", melt: 1925, boil: 3675 },
-            { n: 72, s: "Hf", name: "Hafnium", m: 178.49, cat: "transition-metal", x: 4, y: 6, config: "[Xe] 4f14 5d2 6s2", discovery: "1923", melt: 2506, boil: 4876 },
-            { n: 73, s: "Ta", name: "Tantalum", m: 180.95, cat: "transition-metal", x: 5, y: 6, config: "[Xe] 4f14 5d3 6s2", discovery: "1802", melt: 3290, boil: 5731 },
-            { n: 74, s: "W", name: "Tungsten", m: 183.84, cat: "transition-metal", x: 6, y: 6, config: "[Xe] 4f14 5d4 6s2", discovery: "1783", melt: 3695, boil: 5828 },
-            { n: 75, s: "Re", name: "Rhenium", m: 186.21, cat: "transition-metal", x: 7, y: 6, config: "[Xe] 4f14 5d5 6s2", discovery: "1925", melt: 3459, boil: 5869 },
-            { n: 76, s: "Os", name: "Osmium", m: 190.23, cat: "transition-metal", x: 8, y: 6, config: "[Xe] 4f14 5d6 6s2", discovery: "1803", melt: 3306, boil: 5285 },
-            { n: 77, s: "Ir", name: "Iridium", m: 192.22, cat: "transition-metal", x: 9, y: 6, config: "[Xe] 4f14 5d7 6s2", discovery: "1803", melt: 2719, boil: 4701 },
-            { n: 78, s: "Pt", name: "Platinum", m: 195.08, cat: "transition-metal", x: 10, y: 6, config: "[Xe] 4f14 5d9 6s1", discovery: "1735", melt: 2041.4, boil: 4098 },
-            { n: 79, s: "Au", name: "Gold", m: 196.97, cat: "transition-metal", x: 11, y: 6, config: "[Xe] 4f14 5d10 6s1", discovery: "Ancient", melt: 1337.33, boil: 3129 },
-            { n: 80, s: "Hg", name: "Mercury", m: 200.59, cat: "transition-metal", x: 12, y: 6, config: "[Xe] 4f14 5d10 6s2", discovery: "Ancient", melt: 234.32, boil: 629.88 },
-            { n: 81, s: "Tl", name: "Thallium", m: 204.38, cat: "post-transition-metal", x: 13, y: 6, config: "[Xe] 4f14 5d10 6s2 6p1", discovery: "1861", melt: 577, boil: 1746 },
-            { n: 82, s: "Pb", name: "Lead", m: 207.2, cat: "post-transition-metal", x: 14, y: 6, config: "[Xe] 4f14 5d10 6s2 6p2", discovery: "Ancient", melt: 600.61, boil: 2022 },
-            { n: 83, s: "Bi", name: "Bismuth", m: 208.98, cat: "post-transition-metal", x: 15, y: 6, config: "[Xe] 4f14 5d10 6s2 6p3", discovery: "1753", melt: 544.7, boil: 1837 },
-            { n: 84, s: "Po", name: "Polonium", m: 209, cat: "post-transition-metal", x: 16, y: 6, config: "[Xe] 4f14 5d10 6s2 6p4", discovery: "1898", melt: 527, boil: 1235 },
-            { n: 85, s: "At", name: "Astatine", m: 210, cat: "metalloid", x: 17, y: 6, config: "[Xe] 4f14 5d10 6s2 6p5", discovery: "1940", melt: 575, boil: 610 },
-            { n: 86, s: "Rn", name: "Radon", m: 222, cat: "noble-gas", x: 18, y: 6, config: "[Xe] 4f14 5d10 6s2 6p6", discovery: "1900", melt: 202, boil: 211.3 },
-            { n: 87, s: "Fr", name: "Francium", m: 223, cat: "alkali-metal", x: 1, y: 7, config: "[Rn] 7s1", discovery: "1939", melt: 300, boil: 950 },
-            { n: 88, s: "Ra", name: "Radium", m: 226, cat: "alkaline-earth-metal", x: 2, y: 7, config: "[Rn] 7s2", discovery: "1898", melt: 973, boil: 2010 },
-            { n: 89, s: "Ac", name: "Actinium", m: 227, cat: "actinide", x: 4, y: 10, config: "[Rn] 6d1 7s2", discovery: "1899", melt: 1323, boil: 3471 },
-            { n: 90, s: "Th", name: "Thorium", m: 232.04, cat: "actinide", x: 5, y: 10, config: "[Rn] 6d2 7s2", discovery: "1828", melt: 2115, boil: 5061 },
-            { n: 91, s: "Pa", name: "Protactinium", m: 231.04, cat: "actinide", x: 6, y: 10, config: "[Rn] 5f2 6d1 7s2", discovery: "1913", melt: 1841, boil: 4300 },
-            { n: 92, s: "U", name: "Uranium", m: 238.03, cat: "actinide", x: 7, y: 10, config: "[Rn] 5f3 6d1 7s2", discovery: "1789", melt: 1405.3, boil: 4404 },
-            { n: 93, s: "Np", name: "Neptunium", m: 237, cat: "actinide", x: 8, y: 10, config: "[Rn] 5f4 6d1 7s2", discovery: "1940", melt: 917, boil: 4273 },
-            { n: 94, s: "Pu", name: "Plutonium", m: 244, cat: "actinide", x: 9, y: 10, config: "[Rn] 5f6 7s2", discovery: "1940", melt: 912.5, boil: 3501 },
-            { n: 95, s: "Am", name: "Americium", m: 243, cat: "actinide", x: 10, y: 10, config: "[Rn] 5f7 7s2", discovery: "1944", melt: 1449, boil: 2880 },
-            { n: 96, s: "Cm", name: "Curium", m: 247, cat: "actinide", x: 11, y: 10, config: "[Rn] 5f7 6d1 7s2", discovery: "1944", melt: 1613, boil: 3383 },
-            { n: 97, s: "Bk", name: "Berkelium", m: 247, cat: "actinide", x: 12, y: 10, config: "[Rn] 5f9 7s2", discovery: "1949", melt: 1259, boil: 2900 },
-            { n: 98, s: "Cf", name: "Californium", m: 251, cat: "actinide", x: 13, y: 10, config: "[Rn] 5f10 7s2", discovery: "1950", melt: 1173, boil: 1743 },
-            { n: 99, s: "Es", name: "Einsteinium", m: 252, cat: "actinide", x: 14, y: 10, config: "[Rn] 5f11 7s2", discovery: "1952", melt: 1133, boil: 1269 },
-            { n: 100, s: "Fm", name: "Fermium", m: 257, cat: "actinide", x: 15, y: 10, config: "[Rn] 5f12 7s2", discovery: "1952", melt: 1800, boil: "N/A" },
-            { n: 101, s: "Md", name: "Mendelevium", m: 258, cat: "actinide", x: 16, y: 10, config: "[Rn] 5f13 7s2", discovery: "1955", melt: 1100, boil: "N/A" },
-            { n: 102, s: "No", name: "Nobelium", m: 259, cat: "actinide", x: 17, y: 10, config: "[Rn] 5f14 7s2", discovery: "1958", melt: 1100, boil: "N/A" },
-            { n: 103, s: "Lr", name: "Lawrencium", m: 262, cat: "actinide", x: 18, y: 10, config: "[Rn] 5f14 7s2 7p1", discovery: "1961", melt: 1900, boil: "N/A" },
-            { n: 104, s: "Rf", name: "Rutherfordium", m: 267, cat: "transition-metal", x: 4, y: 7, config: "[Rn] 5f14 6d2 7s2", discovery: "1964", melt: 2400, boil: 5800 },
-            { n: 105, s: "Db", name: "Dubnium", m: 270, cat: "transition-metal", x: 5, y: 7, config: "[Rn] 5f14 6d3 7s2", discovery: "1967", melt: "N/A", boil: "N/A" },
-            { n: 106, s: "Sg", name: "Seaborgium", m: 271, cat: "transition-metal", x: 6, y: 7, config: "[Rn] 5f14 6d4 7s2", discovery: "1974", melt: "N/A", boil: "N/A" },
-            { n: 107, s: "Bh", name: "Bohrium", m: 270, cat: "transition-metal", x: 7, y: 7, config: "[Rn] 5f14 6d5 7s2", discovery: "1981", melt: "N/A", boil: "N/A" },
-            { n: 108, s: "Hs", name: "Hassium", m: 277, cat: "transition-metal", x: 8, y: 7, config: "[Rn] 5f14 6d6 7s2", discovery: "1984", melt: "N/A", boil: "N/A" },
-            { n: 109, s: "Mt", name: "Meitnerium", m: 278, cat: "transition-metal", x: 9, y: 7, config: "[Rn] 5f14 6d7 7s2", discovery: "1982", melt: "N/A", boil: "N/A" },
-            { n: 110, s: "Ds", name: "Darmstadtium", m: 281, cat: "transition-metal", x: 10, y: 7, config: "[Rn] 5f14 6d9 7s1", discovery: "1994", melt: "N/A", boil: "N/A" },
-            { n: 111, s: "Rg", name: "Roentgenium", m: 282, cat: "transition-metal", x: 11, y: 7, config: "[Rn] 5f14 6d10 7s1", discovery: "1994", melt: "N/A", boil: "N/A" },
-            { n: 112, s: "Cn", name: "Copernicium", m: 285, cat: "transition-metal", x: 12, y: 7, config: "[Rn] 5f14 6d10 7s2", discovery: "1996", melt: "N/A", boil: 357 },
-            { n: 113, s: "Nh", name: "Nihonium", m: 286, cat: "post-transition-metal", x: 13, y: 7, config: "[Rn] 5f14 6d10 7s2 7p1", discovery: "2003", melt: 700, boil: 1400 },
-            { n: 114, s: "Fl", name: "Flerovium", m: 289, cat: "post-transition-metal", x: 14, y: 7, config: "[Rn] 5f14 6d10 7s2 7p2", discovery: "1998", melt: 340, boil: 420 },
-            { n: 115, s: "Mc", name: "Moscovium", m: 290, cat: "post-transition-metal", x: 15, y: 7, config: "[Rn] 5f14 6d10 7s2 7p3", discovery: "2003", melt: 670, boil: 1400 },
-            { n: 116, s: "Lv", name: "Livermorium", m: 293, cat: "post-transition-metal", x: 16, y: 7, config: "[Rn] 5f14 6d10 7s2 7p4", discovery: "2000", melt: 700, boil: 1100 },
-            { n: 117, s: "Ts", name: "Tennessine", m: 294, cat: "metalloid", x: 17, y: 7, config: "[Rn] 5f14 6d10 7s2 7p5", discovery: "2010", melt: 723, boil: 883 },
-            { n: 118, s: "Og", name: "Oganesson", m: 294, cat: "noble-gas", x: 18, y: 7, config: "[Rn] 5f14 6d10 7s2 7p6", discovery: "2002", melt: 350, boil: 350 }
-        ];
+        let elements = [];
 
-        const table = document.getElementById('periodic-table');
-        const modal = document.getElementById('modal-overlay');
-        const modalBody = document.getElementById('modal-body');
+        async function init() {
+            try {
+                const res = await fetch('elements.json');
+                elements = await res.json();
+                const table = document.getElementById('periodic-table');
 
-        function init() {
-            elements.forEach(el => {
-                const card = document.createElement('div');
-                card.className = `element-card ${el.cat}`;
-                card.dataset.name = el.name.toLowerCase();
-                card.dataset.symbol = el.s.toLowerCase();
-                card.dataset.num = el.n;
-                card.dataset.cat = el.cat;
-                card.style.gridColumn = el.x;
-                card.style.gridRow = el.y;
+                elements.forEach(el => {
+                    const card = document.createElement('div');
+                    card.className = `element-card ${el.cat}`;
+                    card.dataset.num = el.n.toString();
+                    card.dataset.name = el.name.toLowerCase();
+                    card.dataset.symbol = el.s.toLowerCase();
+                    card.dataset.cat = el.cat;
+                    card.dataset.valence = el.valence || 0;
+                    card.dataset.melt = (el.melt === "N/A" || !el.melt) ? 0 : el.melt;
 
-                card.innerHTML = `
-                    <span class="num">${el.n}</span>
-                    <span class="sym">${el.s}</span>
-                    <span class="name">${el.name}</span>
-                `;
+                    card.style.gridColumn = el.x;
+                    card.style.gridRow = el.y;
 
-                card.addEventListener('click', () => showDetails(el));
-                table.appendChild(card);
-            });
+                    card.innerHTML = `<span class="num">${el.n}</span><span class="sym">${el.s}</span><span style="font-size:0.6rem;">${el.name}</span>`;
+                    card.onclick = () => showDetails(el);
+                    table.appendChild(card);
+                });
+                updateStates(298);
+            } catch (e) { console.error("JSON Error", e); }
+        }
+
+        function resetAllFilters() {
+            document.getElementById('search').value = '';
+            document.getElementById('filter-category').value = 'all';
+            document.getElementById('temp-slider').value = 298;
+            document.getElementById('melt-slider').value = 0;
+            document.getElementById('valence-slider').value = 0;
+
+            updateStates(298);
+            filterElements();
         }
 
         function filterElements() {
             const query = document.getElementById('search').value.toLowerCase();
             const cat = document.getElementById('filter-category').value;
-            const cards = document.querySelectorAll('.element-card');
+            const valenceVal = parseInt(document.getElementById('valence-slider').value);
+            const meltLimit = parseInt(document.getElementById('melt-slider').value);
 
-            cards.forEach(card => {
-                const matchesSearch = card.dataset.name.includes(query) ||
-                    card.dataset.symbol.includes(query) ||
-                    card.dataset.num.includes(query);
+            document.getElementById('valence-val').innerText = valenceVal === 0 ? "All" : valenceVal;
+            document.getElementById('melt-val').innerText = meltLimit;
+
+            document.querySelectorAll('.element-card').forEach(card => {
+                const matchesSearch = card.dataset.name.includes(query) || card.dataset.symbol.includes(query) || card.dataset.num.includes(query);
                 const matchesCat = (cat === 'all' || card.dataset.cat === cat);
+                const matchesValence = (valenceVal === 0 || parseInt(card.dataset.valence) === valenceVal);
+                const matchesMelt = (parseFloat(card.dataset.melt) >= meltLimit);
 
-                card.classList.toggle('dimmed', !(matchesSearch && matchesCat));
+                card.classList.toggle('dimmed', !(matchesSearch && matchesCat && matchesValence && matchesMelt));
+            });
+        }
+
+        function updateStates(kelvin) {
+            document.getElementById('temp-val').innerText = kelvin;
+            elements.forEach(el => {
+                const card = document.querySelector(`.element-card[data-num="${el.n}"]`);
+                if (!card) return;
+                card.classList.remove('state-liquid', 'state-gas');
+                if (el.melt !== "N/A" && kelvin > el.melt && kelvin < el.boil) card.classList.add('state-liquid');
+                if (el.boil !== "N/A" && kelvin >= el.boil) card.classList.add('state-gas');
             });
         }
 
         function showDetails(el) {
-            const boilVal = el.boil === "N/A" ? "Unknown" : `${el.boil} K`;
-            const meltVal = el.melt === "N/A" ? "Unknown" : `${el.melt} K`;
+            const body = document.getElementById('modal-body');
+            const modalContent = document.querySelector('.modal-content');
 
-            const categoryMap = {
-                'diatomic-nonmetal': 'var(--nonmetal)',
-                'noble-gas': 'var(--noble)',
+            const categoryColors = {
                 'alkali-metal': 'var(--alkali)',
                 'alkaline-earth-metal': 'var(--alkaline)',
-                'metalloid': 'var(--metalloid)',
-                'post-transition-metal': 'var(--post-transition)',
                 'transition-metal': 'var(--transition)',
+                'post-transition-metal': 'var(--post-transition)',
+                'metalloid': 'var(--metalloid)',
+                'diatomic-nonmetal': 'var(--nonmetal)',
+                'noble-gas': 'var(--noble)',
                 'lanthanide': 'var(--lanthanide)',
                 'actinide': 'var(--actinide)'
             };
+            const groupColor = categoryColors[el.cat] || 'var(--accent)';
 
-            const groupColor = categoryMap[el.cat] || 'var(--accent)';
-            const modalContent = document.querySelector('.modal-content');
-            modalContent.style.setProperty('--accent', groupColor);
+            modalContent.style.borderColor = groupColor;
+            modalContent.style.boxShadow = `0 0 20px ${groupColor}40`;
 
-            modalBody.innerHTML = `
-        <span class="cat-label" style="color: var(--accent)">${el.cat.replace(/-/g, ' ')}</span>
-        <h2 style="color: var(--accent)">${el.name} (${el.s})</h2>
-        <div class="info-grid">
-            <div class="info-item"><b>Atomic Number</b>${el.n}</div>
-            <div class="info-item"><b>Atomic Mass</b>${el.m} u</div>
-            <div class="info-item"><b>Configuration</b>${el.config}</div>
-            <div class="info-item"><b>Discovery</b>${el.discovery}</div>
-            <div class="info-item"><b>Melting Point</b>${meltVal}</div>
-            <div class="info-item"><b>Boiling Point</b>${boilVal}</div>
-        </div>
-    `;
-            modal.style.display = 'flex';
+            body.innerHTML = `
+                <h2 style="font-size:2.5rem; margin:0; color:${groupColor};">${el.name} (${el.s})</h2>
+                <div class="info-grid">
+                    <div class="info-item"><b>Atomic Number</b> ${el.n}</div>
+                    <div class="info-item"><b>Atomic Mass</b> ${el.m} u</div>
+                    <div class="info-item"><b>Electronegativity</b> ${el.en}</div>
+                    <div class="info-item"><b>Valence Electrons</b> ${el.valence}</div>
+                    <div class="info-item"><b>Melting Point</b> ${el.melt} K</div>
+                    <div class="info-item"><b>Boiling Point</b> ${el.boil} K</div>
+                </div>
+                <a href="https://en.wikipedia.org/wiki/${el.name}" target="_blank" class="wiki-btn" style="background-color:${groupColor};">WIKIPEDIA</a>
+            `;
+            document.getElementById('modal-overlay').style.display = 'flex';
         }
 
-        document.getElementById('search').addEventListener('input', filterElements);
-        document.getElementById('filter-category').addEventListener('change', filterElements);
-        document.getElementById('close-modal').addEventListener('click', () => modal.style.display = 'none');
-        modal.addEventListener('click', (e) => { if (e.target === modal) modal.style.display = 'none'; });
-
+        function closeModal() { document.getElementById('modal-overlay').style.display = 'none'; }
         init();
     </script>
+    <a href="https://github.com/kbrault/periodic-table-js" class="github-corner" aria-label="View source on GitHub">
+        <svg width="80" height="80" viewBox="0 0 250 250"
+            style="fill:#334155; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true">
+            <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+            <path
+                d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"
+                fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+            <path
+                d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"
+                fill="currentColor" class="octo-body"></path>
+        </svg>
+    </a>
 </body>
 
 </html>
