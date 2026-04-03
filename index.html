@@ -372,12 +372,14 @@
     </a>
 
     <header>
+        <h1 style="display:none;">Interactive Periodic Table</h1>
         <div class="controls">
             <button class="reset-btn" onclick="resetAllFilters()">Reset All</button>
 
             <div class="control-group">
-                <input type="text" id="search" placeholder="Search..." oninput="filterElements()">
-                <select id="filter-category" onchange="filterElements()">
+                <input type="text" id="search" placeholder="Search..." oninput="filterElements()" aria-label="Search elements by name, symbol or number">
+
+                <select id="filter-category" onchange="filterElements()" aria-label="Filter by element category">
                     <option value="all">All Groups</option>
                     <option value="alkali-metal">Alkali</option>
                     <option value="alkaline-earth-metal">Alkaline</option>
@@ -393,27 +395,25 @@
 
             <div class="control-group">
                 <div class="control-box">
-                    <label>Temp: <b id="temp-val">298</b>K</label>
-                    <input type="range" id="temp-slider" min="0" max="6000" value="298"
-                        oninput="updateStates(this.value); filterElements();">
+                    <label for="temp-slider">Temp: <b id="temp-val">298</b>K</label>
+                    <input type="range" id="temp-slider" min="0" max="6000" value="298" oninput="updateStates(this.value); filterElements();">
                 </div>
                 <div class="control-box">
-                    <label>Melt: <b id="melt-val">0</b>K+</label>
+                    <label for="melt-slider">Melt: <b id="melt-val">0</b>K+</label>
                     <input type="range" id="melt-slider" min="0" max="4000" value="0" oninput="filterElements()">
                 </div>
             </div>
-
+            
             <div class="control-group">
                 <div class="control-box">
-                    <label>Valence: <b id="valence-val">All</b></label>
+                    <label for="valence-slider">Valence: <b id="valence-val">All</b></label>
                     <input type="range" id="valence-slider" min="0" max="8" value="0" oninput="filterElements()">
                 </div>
                 <div class="control-box">
-                    <label>EN: <b id="en-val">All</b></label>
+                    <label for="en-slider">EN: <b id="en-val">All</b></label>
                     <input type="range" id="en-slider" min="0" max="4" step="0.1" value="0" oninput="filterElements()">
                 </div>
             </div>
-        </div>
 
         <div class="legend">
             <div class="legend-item">
@@ -446,17 +446,18 @@
             </div>
         </div>
     </header>
-
-    <div class="table-wrapper">
-        <div id="periodic-table" class="periodic-table"></div>
-    </div>
-
-    <div id="modal-overlay" class="modal-overlay" onclick="closeModal()">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <button id="close-modal" onclick="closeModal()"></button>
-            <div id="modal-body"></div>
+    <main>
+        <div class="table-wrapper">
+            <div id="periodic-table" class="periodic-table"></div>
         </div>
-    </div>
+    
+        <div id="modal-overlay" class="modal-overlay" onclick="closeModal()">
+            <div class="modal-content" onclick="event.stopPropagation()">
+                <button id="close-modal" onclick="closeModal()"></button>
+                <div id="modal-body"></div>
+            </div>
+        </div>
+    </main>
 
     <script>
         let elements = [];
